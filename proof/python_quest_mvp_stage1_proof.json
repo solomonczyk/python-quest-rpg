@@ -45,5 +45,6 @@
     "/stage/1/final",
     "/chat"
   ],
-  "notes": "AI mentor uses DeepSeek deepseek-v4-flash via OpenAI-compatible API. Mock fallback activates if DEEPSEEK_API_KEY is missing. No server-side Python execution."
+  "notes": "AI mentor uses DeepSeek deepseek-v4-flash via OpenAI-compatible API. Mock fallback activates if DEEPSEEK_API_KEY is missing. No server-side Python execution.",
+  "commit_hash": "321e1ba"
 }
