@@ -3,7 +3,8 @@ import { GET } from "./route";
 
 describe("GET /api/lessons", () => {
   it("returns an array of lessons", async () => {
-    const res = await GET();
+    const req = new Request("http://localhost/api/lessons?locale=ru");
+    const res = await GET(req);
     const data = await res.json();
     expect(Array.isArray(data)).toBe(true);
     expect(data.length).toBe(10);

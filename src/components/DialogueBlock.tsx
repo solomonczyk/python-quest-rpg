@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { type Locale } from "@/i18n/config";
+import { en } from "@/i18n/dictionaries/en";
+import { ru } from "@/i18n/dictionaries/ru";
 
 interface DialogueEntry {
   character: string;
@@ -15,9 +18,16 @@ const characterColors: Record<string, string> = {
   Glitch: "border-error text-error",
 };
 
-export default function DialogueBlock({ dialogue }: { dialogue: DialogueEntry[] }) {
+export default function DialogueBlock({
+  dialogue,
+  locale = "ru",
+}: {
+  dialogue: DialogueEntry[];
+  locale?: Locale;
+}) {
   const [index, setIndex] = useState(0);
   const current = dialogue[index];
+  const t = locale === "en" ? en : ru;
 
   if (!current) return null;
 
@@ -43,7 +53,7 @@ export default function DialogueBlock({ dialogue }: { dialogue: DialogueEntry[] 
               onClick={() => setIndex((i) => i - 1)}
               className="px-3 py-1 text-xs rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container-high transition"
             >
-              ← Назад
+              {t.lesson.dialogueBack}
             </button>
           )}
           {index < dialogue.length - 1 && (
@@ -51,7 +61,7 @@ export default function DialogueBlock({ dialogue }: { dialogue: DialogueEntry[] 
               onClick={() => setIndex((i) => i + 1)}
               className="px-3 py-1 text-xs rounded-lg bg-secondary-container text-on-secondary-container hover:brightness-110 transition"
             >
-              Далее →
+              {t.lesson.dialogueNext}
             </button>
           )}
         </div>

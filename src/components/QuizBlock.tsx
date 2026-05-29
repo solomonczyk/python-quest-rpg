@@ -1,17 +1,23 @@
 "use client";
 
 import { useState } from "react";
+import { type Locale } from "@/i18n/config";
+import { en } from "@/i18n/dictionaries/en";
+import { ru } from "@/i18n/dictionaries/ru";
 
 export default function QuizBlock({
   quiz,
   onAnswer,
   answered,
+  locale = "ru",
 }: {
   quiz: { question: string; options: string[]; correctIndex: number };
   onAnswer: (index: number) => void;
   answered?: boolean;
+  locale?: Locale;
 }) {
   const [selected, setSelected] = useState<number | null>(null);
+  const t = locale === "en" ? en : ru;
 
   const handleSelect = (idx: number) => {
     if (answered) return;
@@ -22,7 +28,7 @@ export default function QuizBlock({
   return (
     <div className="rounded-xl border border-outline-variant bg-surface-container p-6 md:p-8">
       <h5 className="font-[family-name:var(--font-headline)] text-primary text-lg font-bold mb-4">
-        Knowledge Check
+        {t.lesson.quizTitle}
       </h5>
       <p className="text-on-surface mb-6">{quiz.question}</p>
       <div className="space-y-3">
@@ -52,7 +58,7 @@ export default function QuizBlock({
       </div>
       {answered && selected !== null && (
         <p className={`mt-4 text-sm font-bold ${selected === quiz.correctIndex ? "text-primary" : "text-error"}`}>
-          {selected === quiz.correctIndex ? "Correct! The machine hums with approval." : "Not quite. Glitch approves... but Silas frowns."}
+          {selected === quiz.correctIndex ? t.lesson.correctFeedback : t.lesson.incorrectFeedback}
         </p>
       )}
     </div>

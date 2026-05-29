@@ -1,6 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { type Locale } from "@/i18n/config";
+import { en } from "@/i18n/dictionaries/en";
+import { ru } from "@/i18n/dictionaries/ru";
 
 interface LessonItem {
   slug: string;
@@ -12,15 +15,19 @@ interface LessonItem {
 export default function QuestSidebar({
   lessons,
   currentSlug,
+  locale = "ru",
 }: {
   lessons: LessonItem[];
   currentSlug?: string;
+  locale?: Locale;
 }) {
+  const t = locale === "en" ? en : ru;
+
   return (
     <aside className="hidden lg:flex flex-col w-[280px] h-[calc(100vh-64px)] sticky top-16 border-r border-outline-variant bg-surface-container-lowest py-6">
       <div className="px-6 mb-6">
         <h2 className="text-primary font-[family-name:var(--font-headline)] text-lg font-bold">
-          Stage 1: Awakening
+          {t.nav.stage1}: {t.stage.stage1Title}
         </h2>
         <p className="text-xs text-on-surface-variant mt-1 uppercase tracking-widest">
           The Aether-Steam Workshop

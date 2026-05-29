@@ -1,22 +1,44 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import ProgressTracker from "@/components/ProgressTracker";
+import { getStage1Content } from "@/content/stage1";
+import { type Locale, DEFAULT_LOCALE } from "@/i18n/config";
+import { en } from "@/i18n/dictionaries/en";
+import { ru } from "@/i18n/dictionaries/ru";
 
-export default async function StageDashboard() {
-  const lessons = await prisma.lesson.findMany({ orderBy: { sortOrder: "asc" } });
+interface Props {
+  searchParams?: Promise<{ locale?: string }>;
+}
+
+export default async function StageDashboard({ searchParams }: Props) {
+  const params = await searchParams;
+  const locale = (params?.locale as Locale) || DEFAULT_LOCALE;
+  const t = locale === "en" ? en : ru;
+
+  const dbLessons = await prisma.lesson.findMany({ orderBy: { sortOrder: "asc" } });
+  const localized = getStage1Content(locale);
+
+  const lessons = dbLessons.map((db) => {
+    const loc = localized.find((l) => l.slug === db.slug);
+    return {
+      ...db,
+      title: loc?.title ?? db.title,
+      topic: loc?.topic ?? db.topic,
+      mainCharacter: loc?.mainCharacter ?? db.mainCharacter,
+    };
+  });
 
   return (
     <div className="mx-auto max-w-[1280px] px-5 md:px-16 py-12">
       <div className="mb-10">
         <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary-fixed-dim mb-2 block">
-          Stage 1
+          {t.nav.stage1}
         </span>
         <h1 className="font-[family-name:var(--font-headline)] text-primary text-3xl md:text-4xl font-bold">
-          The Awakening
+          {t.stage.stage1Title}
         </h1>
         <p className="text-on-surface-variant mt-3 max-w-2xl">
-          Master the foundational runes of Python: voice, memory, logic, and control.
-          Complete all lessons to unlock the Core Spark.
+          {t.stage.stage1Description}
         </p>
       </div>
 
@@ -40,7 +62,7 @@ export default async function StageDashboard() {
                   </span>
                   {isFinal && (
                     <span className="text-xs bg-surface-tint/10 text-surface-tint px-2 py-0.5 rounded uppercase font-bold">
-                      Final Quest
+                      {t.stage.finalQuest}
                     </span>
                   )}
                 </div>
@@ -61,7 +83,7 @@ export default async function StageDashboard() {
           })}
         </div>
         <div className="md:col-span-3">
-          <ProgressTracker current={0} total={lessons.length - 1} />
+          <ProgressTracker current={0} total={lessons.length - 1} locale={locale} />
         </div>
       </div>
     </div>

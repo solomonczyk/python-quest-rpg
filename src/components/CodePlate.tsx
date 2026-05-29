@@ -1,11 +1,22 @@
 "use client";
 
-export default function CodePlate({ code }: { code: string }) {
+import { type Locale } from "@/i18n/config";
+import { en } from "@/i18n/dictionaries/en";
+import { ru } from "@/i18n/dictionaries/ru";
+
+export default function CodePlate({
+  code,
+  locale = "ru",
+}: {
+  code: string;
+  locale?: Locale;
+}) {
+  const t = locale === "en" ? en : ru;
   return (
     <div className="rounded-xl overflow-hidden border border-outline-variant shadow-lg">
       <div className="bg-surface-container-low px-4 py-2 border-b border-outline-variant flex items-center justify-between">
         <span className="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">
-          Engraving Plate
+          {t.lesson.codeExample}
         </span>
         <div className="flex gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full bg-error/40" />

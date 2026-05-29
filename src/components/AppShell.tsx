@@ -1,6 +1,15 @@
+"use client";
+
 import Link from "next/link";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useLanguage } from "@/i18n/useLanguage";
+import { en } from "@/i18n/dictionaries/en";
+import { ru } from "@/i18n/dictionaries/ru";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
+  const { locale, setLocale } = useLanguage();
+  const t = locale === "en" ? en : ru;
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-50 border-b border-outline-variant bg-surface/80 backdrop-blur-md">
@@ -10,14 +19,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               Python Quest
             </span>
           </Link>
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-on-surface-variant">
-            <Link href="/stage/1" className="hover:text-primary transition-colors">
-              Stage 1
-            </Link>
-            <Link href="/chat" className="hover:text-primary transition-colors">
-              Mentor
-            </Link>
-          </nav>
+          <div className="flex items-center gap-6">
+            <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-on-surface-variant">
+              <Link href="/stage/1" className="hover:text-primary transition-colors">
+                {t.nav.stage1}
+              </Link>
+              <Link href="/chat" className="hover:text-primary transition-colors">
+                {t.nav.mentor}
+              </Link>
+            </nav>
+            <LanguageSwitcher locale={locale} onChange={setLocale} />
+          </div>
         </div>
       </header>
       <main className="flex-1">{children}</main>

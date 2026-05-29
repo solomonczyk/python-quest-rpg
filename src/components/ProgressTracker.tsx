@@ -1,17 +1,24 @@
 "use client";
 
+import { type Locale } from "@/i18n/config";
+import { en } from "@/i18n/dictionaries/en";
+import { ru } from "@/i18n/dictionaries/ru";
+
 export default function ProgressTracker({
   current,
   total,
+  locale = "ru",
 }: {
   current: number;
   total: number;
+  locale?: Locale;
 }) {
-  const pct = Math.round((current / total) * 100);
+  const t = locale === "en" ? en : ru;
+  const pct = total === 0 ? 0 : Math.round((current / total) * 100);
   return (
     <div className="rounded-xl bg-surface-container p-6 flex flex-col items-center text-center">
       <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-4">
-        Aether Saturation
+        {t.stage.aetherSaturation}
       </p>
       <div className="w-14 h-32 bg-surface-container-low border border-outline-variant rounded-full p-1.5 flex items-end overflow-hidden relative">
         <div
@@ -23,7 +30,7 @@ export default function ProgressTracker({
         {pct}%
       </p>
       <p className="text-xs text-on-surface-variant mt-1">
-        {current}/{total} Lessons
+        {current}/{total} {t.stage.lessons}
       </p>
     </div>
   );

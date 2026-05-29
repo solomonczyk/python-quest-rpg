@@ -10,6 +10,9 @@ import MissionCard from "@/components/MissionCard";
 import QuizBlock from "@/components/QuizBlock";
 import AbilityReward from "@/components/AbilityReward";
 import { validateMission } from "@/lib/validateMission";
+import { useLanguage } from "@/i18n/useLanguage";
+import { en } from "@/i18n/dictionaries/en";
+import { ru } from "@/i18n/dictionaries/ru";
 
 interface Lesson {
   id: number;
@@ -32,6 +35,8 @@ export default function LessonPage() {
   const params = useParams();
   const router = useRouter();
   const slug = params.slug as string;
+  const { locale } = useLanguage();
+  const t = locale === "en" ? en : ru;
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [lessons, setLessons] = useState<{ slug: string; number: string; title: string }[]>([]);
@@ -41,20 +46,20 @@ export default function LessonPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/lessons")
+    fetch(`/api/lessons?locale=${locale}`)
       .then((r) => r.json())
       .then((data) => {
         setLessons(
           data.map((l: Lesson) => ({ slug: l.slug, number: l.number, title: l.title }))
         );
       });
-    fetch(`/api/lessons/${slug}`)
+    fetch(`/api/lessons/${slug}?locale=${locale}`)
       .then((r) => r.json())
       .then((data) => {
         setLesson(data);
         setLoading(false);
       });
-  }, [slug]);
+  }, [slug, locale]);
 
   const handleMission = (code: string) => {
     if (!lesson) return;
@@ -72,7 +77,7 @@ export default function LessonPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-[60vh]">
-        <p className="text-on-surface-variant animate-pulse">Loading lesson...</p>
+        <p className="text-on-surface-variant animate-pulse">{t.common.loading}</p>
       </div>
     );
   }
@@ -106,13 +111,14 @@ export default function LessonPage() {
       <QuestSidebar
         lessons={lessons.map((l) => ({ ...l, status: "available" }))}
         currentSlug={slug}
+        locale={locale}
       />
       <main className="flex-1 p-6 md:p-12 overflow-y-auto">
         <section className="relative mb-12 rounded-3xl overflow-hidden min-h-[300px] flex items-end">
           <div className="absolute inset-0 bg-gradient-to-t from-surface to-surface-container-high" />
           <div className="relative z-10 p-8 md:p-10">
             <span className="text-xs font-bold uppercase tracking-[0.2em] text-surface-tint mb-3 block">
-              Lesson {lesson.number}
+              {t.lesson.lesson} {lesson.number}
             </span>
             <h1 className="font-[family-name:var(--font-headline)] text-primary text-3xl md:text-4xl font-bold mb-4">
               {lesson.title}
@@ -123,28 +129,30 @@ export default function LessonPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
           <div className="lg:col-span-2 space-y-6">
-            <DialogueBlock dialogue={dialogue} />
+            <DialogueBlock dialogue={dialogue} locale={locale} />
             <div className="rounded-xl border border-outline-variant bg-surface-container p-6 md:p-8">
               <h3 className="font-[family-name:var(--font-headline)] text-on-surface text-xl font-bold mb-4">
-                Explanation
+                {t.lesson.explanation}
               </h3>
               <p className="text-on-surface-variant leading-relaxed whitespace-pre-line">
                 {lesson.explanation}
               </p>
             </div>
-            <CodePlate code={lesson.codeExample} />
+            <CodePlate code={lesson.codeExample} locale={locale} />
             <MissionCard
               mission={lesson.mission}
               onSubmit={handleMission}
               result={missionResult}
+              locale={locale}
             />
-            <GlitchTrap trap={trap} />
+            <GlitchTrap trap={trap} locale={locale} />
           </div>
           <div className="space-y-6">
             <QuizBlock
               quiz={quiz}
               onAnswer={handleQuiz}
               answered={quizAnswered}
+              locale={locale}
             />
             {(missionResult === "pass" || quizCorrect) && (
               <AbilityReward ability={lesson.rewardAbility} />
@@ -159,7 +167,7 @@ export default function LessonPage() {
             className="flex items-center gap-2 text-on-surface-variant hover:text-primary transition disabled:opacity-30"
           >
             <span>←</span>
-            <span className="text-xs font-bold uppercase tracking-wider">Previous</span>
+            <span className="text-xs font-bold uppercase tracking-wider">{t.lesson.prevLesson}</span>
           </button>
           <div className="flex gap-1.5">
             {lessons.map((l, i) => (
@@ -176,7 +184,7 @@ export default function LessonPage() {
             disabled={!nextSlug}
             className="flex items-center gap-2 text-on-surface-variant hover:text-primary transition disabled:opacity-30"
           >
-            <span className="text-xs font-bold uppercase tracking-wider">Next</span>
+            <span className="text-xs font-bold uppercase tracking-wider">{t.lesson.nextLesson}</span>
             <span>→</span>
           </button>
         </div>

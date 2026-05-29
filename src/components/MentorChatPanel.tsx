@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { type Locale } from "@/i18n/config";
+import { en } from "@/i18n/dictionaries/en";
+import { ru } from "@/i18n/dictionaries/ru";
 
 interface Message {
   role: "user" | "assistant";
@@ -9,14 +12,17 @@ interface Message {
 
 export default function MentorChatPanel({
   initialMode = "Lexa",
+  locale = "ru",
 }: {
   initialMode?: string;
+  locale?: Locale;
 }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState(initialMode);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const t = locale === "en" ? en : ru;
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -33,14 +39,14 @@ export default function MentorChatPanel({
       const res = await fetch("/api/mentor/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: [...messages, userMsg], mode }),
+        body: JSON.stringify({ messages: [...messages, userMsg], mode, locale }),
       });
       const data = await res.json();
       setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Связь потеряна. Попробуй позже." },
+        { role: "assistant", content: locale === "en" ? "Connection lost. Try again later." : "Связь потеряна. Попробуй позже." },
       ]);
     } finally {
       setLoading(false);
@@ -50,7 +56,7 @@ export default function MentorChatPanel({
   return (
     <div className="flex flex-col h-full rounded-xl border border-outline-variant bg-surface-container overflow-hidden">
       <div className="px-4 py-3 border-b border-outline-variant flex items-center justify-between bg-surface-container-high">
-        <span className="text-sm font-bold text-on-surface">AI Mentor</span>
+        <span className="text-sm font-bold text-on-surface">{t.chat.title}</span>
         <select
           value={mode}
           onChange={(e) => setMode(e.target.value)}
@@ -66,7 +72,7 @@ export default function MentorChatPanel({
       <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-[240px]">
         {messages.length === 0 && (
           <p className="text-xs text-on-surface-variant text-center italic">
-            Напиши наставнику. Он не даст ответ сразу — подскажет шаг за шагом.
+            {t.chat.emptyHint}
           </p>
         )}
         {messages.map((m, i) => (
@@ -82,7 +88,7 @@ export default function MentorChatPanel({
           </div>
         ))}
         {loading && (
-          <div className="text-xs text-on-surface-variant animate-pulse">Наставник думает...</div>
+          <div className="text-xs text-on-surface-variant animate-pulse">{t.chat.thinking}</div>
         )}
         <div ref={bottomRef} />
       </div>
@@ -92,14 +98,14 @@ export default function MentorChatPanel({
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && send()}
           className="flex-1 bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface outline-none focus:border-surface-tint"
-          placeholder="Ask the mentor..."
+          placeholder={t.chat.placeholder}
         />
         <button
           onClick={send}
           disabled={loading}
           className="px-4 py-2 bg-secondary-container text-on-secondary-container rounded-lg text-sm font-bold hover:brightness-110 disabled:opacity-40 transition"
         >
-          Send
+          {t.common.send}
         </button>
       </div>
     </div>
