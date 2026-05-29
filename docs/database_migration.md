@@ -1,51 +1,69 @@
-# Database Migration Guide: SQLite → PostgreSQL / Supabase
+# Database Migration Guide
 
-## Overview
+## Dual-Database Strategy
 
-The Prisma schema is designed to work with SQLite for local development and PostgreSQL for production. Both use `Int @id @default(autoincrement())` for IDs, which Prisma handles correctly for each provider.
+| Environment | Provider | Schema File | When to Use |
+|-------------|----------|-------------|-------------|
+| Local dev   | SQLite   | `prisma/schema.sqlite.prisma` | Daily development on your machine |
+| Production  | PostgreSQL | `prisma/schema.prisma` | Vercel + Supabase deployment |
 
-## Steps
+## How It Works
 
-### 1. Update `prisma/schema.prisma`
+`prisma.config.ts` auto-detects the database URL:
 
-Change the datasource block:
+- If `DATABASE_URL` starts with `file:` → uses `schema.sqlite.prisma`
+- Otherwise → uses `schema.prisma` (PostgreSQL)
 
-```prisma
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-```
+Both schemas share identical models. `Int @id @default(autoincrement())` maps correctly for each provider.
 
-> No other schema changes are required. `Int @id @default(autoincrement())` is automatically mapped to PostgreSQL `SERIAL`.
-
-### 2. Update environment variables
-
-Replace the SQLite DATABASE_URL in `.env` with your PostgreSQL connection string:
+## Local Development (SQLite)
 
 ```bash
-# Supabase connection example
+# .env
+DATABASE_URL="file:./dev.db"
+
+# Commands
+npm run db:generate
+npm run dev
+npm run db:seed      # seed locally if needed
+```
+
+## Production Setup (Supabase PostgreSQL)
+
+### 1. Create Supabase project
+Get connection string from **Project Settings → Database → URI**.
+
+### 2. Set environment variable
+```bash
 DATABASE_URL="postgresql://postgres:[password]@db.[project-ref].supabase.co:5432/postgres"
 ```
 
-### 3. Run Prisma migrations
-
-```bash
-npx prisma migrate dev --name init_postgres
-npx prisma db seed
-```
-
-### 4. Re-generate Prisma Client
-
+### 3. Generate Prisma Client
 ```bash
 npx prisma generate
 ```
 
-### 5. Deploy
+### 4. Deploy migrations
+```bash
+npx prisma migrate deploy
+```
 
-Ensure your production environment sets `DATABASE_URL` to the PostgreSQL / Supabase connection string.
+### 5. Seed data (manual, one-time)
+```bash
+npm run db:seed
+```
+
+> **Important:** Seed does **not** run automatically on builds.
+
+## Switching Back to Local
+
+Change `DATABASE_URL` back to `file:./dev.db` and run:
+```bash
+npm run db:generate
+npm run dev
+```
 
 ## Notes
 
-- All business logic uses Prisma Client, so no SQLite-specific code exists in the application layer.
-- JSON fields are stored as strings in SQLite and native JSON in PostgreSQL. The application uses `JSON.parse` / `JSON.stringify` consistently for both.
+- All business logic uses Prisma Client. No SQLite-specific or PostgreSQL-specific code exists in the application layer.
+- JSON fields are stored as strings in both databases. The application uses `JSON.parse` / `JSON.stringify` consistently.

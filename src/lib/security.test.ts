@@ -34,3 +34,43 @@ describe("No unsafe server-side Python execution", () => {
     expect(found).toEqual([]);
   });
 });
+
+describe("No hardcoded local paths", () => {
+  const srcFiles = getAllFiles(path.join(__dirname, ".."), [".ts", ".tsx"]);
+
+  it("has no F:\\ or absolute Windows paths in src/", () => {
+    const found: string[] = [];
+    for (const file of srcFiles) {
+      if (file.endsWith(".test.ts")) continue;
+      const content = fs.readFileSync(file, "utf-8");
+      if (content.includes("F:\\") || /[A-Z]:\\/.test(content)) {
+        found.push(`${file}: contains absolute Windows path`);
+      }
+    }
+    expect(found).toEqual([]);
+  });
+});
+
+describe("No committed secrets", () => {
+  it(".env is ignored by git", () => {
+    const gitignorePath = path.join(process.cwd(), ".gitignore");
+    const content = fs.readFileSync(gitignorePath, "utf-8");
+    expect(content).toMatch(/\.env/);
+  });
+
+  it("no API keys in source files", () => {
+    const srcFiles = getAllFiles(path.join(__dirname, ".."), [".ts", ".tsx"]);
+    const keyPatterns = [/sk-[a-zA-Z0-9]{20,}/, /postgres:\/\/[^:]+:[^@]+@/];
+    const found: string[] = [];
+    for (const file of srcFiles) {
+      if (file.endsWith(".test.ts")) continue;
+      const content = fs.readFileSync(file, "utf-8");
+      for (const pattern of keyPatterns) {
+        if (pattern.test(content)) {
+          found.push(`${file}: contains possible secret`);
+        }
+      }
+    }
+    expect(found).toEqual([]);
+  });
+});

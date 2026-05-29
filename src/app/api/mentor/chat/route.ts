@@ -64,7 +64,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ reply: fallbackReply }, { status: 200 });
     }
 
-    const model = process.env.MENTOR_MODEL || "deepseek-v4-flash";
+    const model = process.env.DEEPSEEK_MODEL || "deepseek-v4-flash";
 
     const completion = await client.chat.completions.create({
       model,
