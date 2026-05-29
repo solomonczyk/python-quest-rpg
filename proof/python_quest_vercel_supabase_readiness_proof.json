@@ -26,7 +26,7 @@
   "supabase_live_migration_executed": false,
   "supabase_live_migration_reason": "No production DATABASE_URL provided by operator",
   "implementation_commit_hash": "21c0320",
-  "proof_commit_hash": "21c0320",
+  "proof_commit_hash": "28cfe36",
   "git_status_clean": true,
   "known_blockers": [
     "Pre-existing vitest config issue prevents all tests from running (TypeError reading 'config')",
