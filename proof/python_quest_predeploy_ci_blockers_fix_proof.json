@@ -10,7 +10,7 @@
   "prisma_generate_passed": true,
   "product_behavior_changed": false,
   "deployment_readiness_unblocked": true,
-  "implementation_commit_hash": "",
-  "proof_commit_hash": "",
+  "implementation_commit_hash": "771d5a5",
+  "proof_commit_hash": "771d5a5",
   "git_status_clean": true
 }
