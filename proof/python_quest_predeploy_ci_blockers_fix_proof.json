@@ -11,6 +11,6 @@
   "product_behavior_changed": false,
   "deployment_readiness_unblocked": true,
   "implementation_commit_hash": "771d5a5",
-  "proof_commit_hash": "771d5a5",
+  "proof_commit_hash": "1197322",
   "git_status_clean": true
 }
