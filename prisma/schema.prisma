@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id              Int      @id @default(autoincrement())
+  displayName     String
+  heroName        String   @default("Adventurer")
+  currentLesson   String   @default("1-1")
+  xp              Int      @default(0)
+  unlockedAbilities String @default("[]")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  progress  Progress[]
+  attempts  Attempt[]
+}
+
+model Lesson {
+  id          Int    @id @default(autoincrement())
+  number      String @unique
+  slug        String @unique
+  title       String
+  topic       String
+  stage       String
+  mainCharacter String
+  dialogue    String @default("[]")
+  explanation String
+  codeExample String
+  glitchTrap  String
+  mission     String
+  missionValidationRule String @default("")
+  quiz        String @default("[]")
+  rewardAbility String
+  sortOrder   Int
+}
+
+model Progress {
+  id            Int      @id @default(autoincrement())
+  playerId      Int
+  lessonId      Int
+  status        String   @default("locked")
+  attempts      Int      @default(0)
+  quizResult    String?
+  missionResult String?
+  unlockedReward Boolean @default(false)
+  completedAt   DateTime?
+
+  player Player @relation(fields: [playerId], references: [id])
+}
+
+model Attempt {
+  id            Int      @id @default(autoincrement())
+  playerId      Int
+  lessonId      Int
+  submittedCode String?
+  result        String   @default("fail")
+  feedback      String?
+  createdAt     DateTime @default(now())
+
+  player Player @relation(fields: [playerId], references: [id])
+}

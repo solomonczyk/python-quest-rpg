@@ -1,0 +1,49 @@
+{
+  "project": "python-quest-mvp",
+  "stage": 1,
+  "name": "Awakening",
+  "timestamp": "2026-05-29T15:25:00Z",
+  "verification": {
+    "lessonsNavigable": true,
+    "lessonsCount": 10,
+    "finalQuestAvailable": true,
+    "lessonStructure": ["hero", "dialogue", "explanation", "codeExample", "glitchTrap", "mission", "quiz", "reward"],
+    "progressPersists": true,
+    "aiMentorEndpoint": "/api/mentor/chat",
+    "visualStyle": "Aether-Steam",
+    "codeStructured": true,
+    "noUnsafeExecution": true,
+    "localRun": true,
+    "testsPass": true
+  },
+  "commands": {
+    "install": "npm install",
+    "lint": "npm run lint",
+    "test": "npm test",
+    "build": "npm run build",
+    "dev": "npm run dev",
+    "seed": "npm run db:seed"
+  },
+  "stack": {
+    "frontend": ["Next.js 16", "TypeScript", "Tailwind CSS v4"],
+    "backend": ["Next.js API Routes", "Prisma ORM", "SQLite (local)", "OpenAI-compatible DeepSeek API"],
+    "database": "SQLite (PostgreSQL-ready schema)"
+  },
+  "pages": [
+    "/",
+    "/stage/1",
+    "/lesson/print",
+    "/lesson/strings",
+    "/lesson/variables",
+    "/lesson/input",
+    "/lesson/int-input",
+    "/lesson/arithmetic",
+    "/lesson/comparisons",
+    "/lesson/if",
+    "/lesson/if-else",
+    "/lesson/final-quest",
+    "/stage/1/final",
+    "/chat"
+  ],
+  "notes": "AI mentor uses DeepSeek deepseek-v4-flash via OpenAI-compatible API. Mock fallback activates if DEEPSEEK_API_KEY is missing. No server-side Python execution."
+}
