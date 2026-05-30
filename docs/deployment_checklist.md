@@ -17,10 +17,11 @@ Use this checklist before and after deploying `python-quest-rpg`.
 
 ## Database
 
-- [ ] Supabase project created
-- [ ] PostgreSQL connection string copied
-- [ ] `npx prisma migrate deploy` executed against production DB
-- [ ] `npm run db:seed` executed once against production DB
+- [x] Supabase project created (python-quest-rpg)
+- [x] PostgreSQL tables created (Player, Lesson, Progress, Attempt)
+- [x] Initial data seeded (lessons 1-1 to 1-4)
+- [ ] `DATABASE_URL` set in Vercel Environment Variables
+- [ ] `DIRECT_URL` set in Vercel Environment Variables
 - [ ] Local SQLite workflow still works (`DATABASE_URL="file:./dev.db"`)
 
 ## Build & Verification

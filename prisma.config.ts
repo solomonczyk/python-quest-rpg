@@ -1,14 +1,16 @@
 
 import "dotenv/config";
-import { defineConfig, env } from "prisma/config";
+import { defineConfig } from "prisma/config";
+import path from "path";
 
 function getSchemaPath(): string {
-  const url = env("DATABASE_URL") || "";
-  if (url.startsWith("file:")) {
-    return "prisma/schema.sqlite.prisma";
-  }
-  return "prisma/schema.prisma";
+  const url = process.env.DATABASE_URL || "";
+  const schemaFile = url.startsWith("file:") ? "schema.sqlite.prisma" : "schema.prisma";
+  return path.join(__dirname, "prisma", schemaFile);
 }
+
+const databaseUrl = process.env.DATABASE_URL || "";
+const directUrl = process.env.DIRECT_URL || databaseUrl || "";
 
 export default defineConfig({
   schema: getSchemaPath(),
@@ -17,6 +19,6 @@ export default defineConfig({
   },
   engine: "classic",
   datasource: {
-    url: env("DATABASE_URL"),
+    url: directUrl,
   },
 });
