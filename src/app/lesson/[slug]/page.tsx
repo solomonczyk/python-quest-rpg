@@ -24,6 +24,9 @@ interface Lesson {
   dialogue: string;
   explanation: string;
   codeExample: string;
+  analogyDialogue?: string;
+  childTakeaway?: string;
+  analogyQuest?: string;
   glitchTrap: string;
   mission: string;
   missionValidationRule: string;
@@ -91,10 +94,12 @@ export default function LessonPage() {
   }
 
   const dialogue = JSON.parse(lesson.dialogue || "[]");
+  const analogyDialogue = lesson.analogyDialogue ? JSON.parse(lesson.analogyDialogue) : [];
   const trap = JSON.parse(lesson.glitchTrap || "{}") as {
     brokenCode: string;
     problem: string;
     fix: string;
+    analogy?: string;
   };
   const quiz = JSON.parse(lesson.quiz || "{}") as {
     question: string;
@@ -139,6 +144,30 @@ export default function LessonPage() {
               </p>
             </div>
             <CodePlate code={lesson.codeExample} locale={locale} />
+            {analogyDialogue.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="font-[family-name:var(--font-headline)] text-on-surface text-xl font-bold">
+                  {t.lesson.analogyTitle}
+                </h3>
+                <DialogueBlock dialogue={analogyDialogue} locale={locale} />
+              </div>
+            )}
+            {lesson.childTakeaway && (
+              <div className="rounded-xl border border-primary/30 bg-primary-container/10 p-6 md:p-8">
+                <h3 className="font-[family-name:var(--font-headline)] text-primary text-lg font-bold mb-2">
+                  {t.lesson.childTakeawayTitle}
+                </h3>
+                <p className="text-on-surface-variant leading-relaxed">{lesson.childTakeaway}</p>
+              </div>
+            )}
+            {lesson.analogyQuest && (
+              <div className="rounded-xl border border-tertiary/30 bg-tertiary-container/10 p-6 md:p-8">
+                <h3 className="font-[family-name:var(--font-headline)] text-tertiary text-lg font-bold mb-2">
+                  {t.lesson.analogyQuestTitle}
+                </h3>
+                <p className="text-on-surface-variant leading-relaxed">{lesson.analogyQuest}</p>
+              </div>
+            )}
             <MissionCard
               mission={lesson.mission}
               onSubmit={handleMission}

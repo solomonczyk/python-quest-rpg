@@ -27,4 +27,68 @@ describe("Stage 1 content", () => {
     const en = getStage1Content("en");
     expect(ru[0].title).not.toBe(en[0].title);
   });
+
+  it("has analogyDialogue in all Russian lessons", () => {
+    const content = getStage1Content("ru");
+    for (const lesson of content) {
+      expect(lesson.analogyDialogue, `Missing analogyDialogue in ${lesson.slug}`).toBeDefined();
+      expect(lesson.analogyDialogue.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("has childTakeaway in all Russian lessons", () => {
+    const content = getStage1Content("ru");
+    for (const lesson of content) {
+      expect(lesson.childTakeaway, `Missing childTakeaway in ${lesson.slug}`).toBeDefined();
+      expect(lesson.childTakeaway.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("has analogyQuest in all Russian lessons", () => {
+    const content = getStage1Content("ru");
+    for (const lesson of content) {
+      expect(lesson.analogyQuest, `Missing analogyQuest in ${lesson.slug}`).toBeDefined();
+      expect(lesson.analogyQuest.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("has glitchTrap.analogy in all Russian lessons", () => {
+    const content = getStage1Content("ru");
+    for (const lesson of content) {
+      expect(lesson.glitchTrap.analogy, `Missing glitchTrap.analogy in ${lesson.slug}`).toBeDefined();
+      expect(lesson.glitchTrap.analogy.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("has analogyDialogue in all English lessons", () => {
+    const content = getStage1Content("en");
+    for (const lesson of content) {
+      expect(lesson.analogyDialogue, `Missing analogyDialogue in ${lesson.slug}`).toBeDefined();
+      expect(lesson.analogyDialogue.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("has childTakeaway in all English lessons", () => {
+    const content = getStage1Content("en");
+    for (const lesson of content) {
+      expect(lesson.childTakeaway, `Missing childTakeaway in ${lesson.slug}`).toBeDefined();
+      expect(lesson.childTakeaway.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("has analogyQuest in all English lessons", () => {
+    const content = getStage1Content("en");
+    for (const lesson of content) {
+      expect(lesson.analogyQuest, `Missing analogyQuest in ${lesson.slug}`).toBeDefined();
+      expect(lesson.analogyQuest.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("has glitchTrap.analogy in all English lessons", () => {
+    const content = getStage1Content("en");
+    for (const lesson of content) {
+      expect(lesson.glitchTrap.analogy, `Missing glitchTrap.analogy in ${lesson.slug}`).toBeDefined();
+      expect(lesson.glitchTrap.analogy.length).toBeGreaterThan(0);
+    }
+  });
 });

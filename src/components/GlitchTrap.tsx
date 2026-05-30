@@ -8,7 +8,7 @@ export default function GlitchTrap({
   trap,
   locale = "ru",
 }: {
-  trap: { brokenCode: string; problem: string; fix: string };
+  trap: { brokenCode: string; problem: string; fix: string; analogy?: string };
   locale?: Locale;
 }) {
   const t = locale === "en" ? en : ru;
@@ -22,6 +22,11 @@ export default function GlitchTrap({
         {t.lesson.glitchTrapTitle}
       </h4>
       <p className="text-on-surface-variant text-sm mb-4">{trap.problem}</p>
+      {trap.analogy && (
+        <p className="text-on-surface-variant text-sm mb-4 italic border-l-2 border-error/40 pl-3">
+          {trap.analogy}
+        </p>
+      )}
       <div className="bg-surface-container-lowest border border-error/30 p-4 rounded-lg font-[family-name:var(--font-mono)] text-xs text-error mb-4 overflow-x-auto">
         {trap.brokenCode}
       </div>
